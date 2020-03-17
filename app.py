@@ -1,4 +1,5 @@
 from flask import Flask, escape, request
+import re
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -22,7 +23,7 @@ def hello():
         "applicationReceivedEnd")
 
     applicationReceivedStart.send_keys("01/03/2020")
-    applicationReceivedEnd.send_keys("02/03/2020")
+    applicationReceivedEnd.send_keys("10/03/2020")
 
     search_button = driver.find_element_by_css_selector('input.button.primary')
     search_button.click()
@@ -35,4 +36,10 @@ def hello():
     metainfo = page_of_results.find('ul', id='searchresults').find_all(
         'p', attrs={'class': 'metaInfo'})
 
-    return 'bob'
+    cleaned_address = []
+    for x in address:
+        clean = re.sub(r'\>(.*?)\<', ' ', str(x))
+        cleaner = clean.replace("\n", "")
+        cleaned_address.append(cleaner)
+        
+    return str(cleaned_address)
