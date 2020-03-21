@@ -10,6 +10,20 @@ from bs4 import BeautifulSoup
 app = Flask(__name__)
 
 
+class DatabaseObject:
+    def __init__(self, address,
+                 reference,
+                 received_date,
+                 validated_date,
+                 status
+                 ):
+        self.address = address
+        self.reference = reference
+        self.received_date = received_date
+        self.validated_date = validated_date
+        self.status = status
+
+
 @app.route('/')
 def hello():
     driver = webdriver.Firefox()
@@ -36,10 +50,36 @@ def hello():
     metainfo = page_of_results.find('ul', id='searchresults').find_all(
         'p', attrs={'class': 'metaInfo'})
 
+    cleaned_metainfo = []
+    for x in metainfo:
+        clean = re.sub(r'\>(.*?)\<', ' ', str(x))
+        cleaner = clean.replace('\n', '')
+        cleaned_metainfo.append(cleaner)
+
     cleaned_address = []
     for x in address:
         clean = re.sub(r'\>(.*?)\<', ' ', str(x))
         cleaner = clean.replace("\n", "")
         cleaned_address.append(cleaner)
-        
+
+    refernce_numbers = []
+    for x in cleaned_metainfo:
+        clean = re.search(r'(?=Ref. No:).*(?=Received)', str(x)).group(0)
+        refernce_numbers.append(clean)
+
+    received_dates = []
+    for x in cleaned_metainfo:
+        clean = re.search(r'(?=Received:).*(?=Validated:)', str(x)).group(0)
+        received_dates.append(clean)
+
+    validated_dates = []
+    for x in cleaned_metainfo:
+        clean = re.search(r'(?=Validated:).*(?=Status:)', str(x)).group(0)
+        validated_dates.append(clean)
+
+    statuses = []
+    for x in cleaned_metainfo:
+        clean = re.search(r'(?=Status:).*(?=)', str(x)).group(0)
+        statuses.append(clean)
+
     return str(cleaned_address)
