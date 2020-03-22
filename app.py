@@ -1,5 +1,6 @@
 from flask import Flask, escape, request
 import re
+import itertools
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -8,20 +9,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from bs4 import BeautifulSoup
 
 app = Flask(__name__)
-
-
-class DatabaseObject:
-    def __init__(self, address,
-                 reference,
-                 received_date,
-                 validated_date,
-                 status
-                 ):
-        self.address = address
-        self.reference = reference
-        self.received_date = received_date
-        self.validated_date = validated_date
-        self.status = status
 
 
 @app.route('/')
@@ -82,4 +69,7 @@ def hello():
         clean = re.search(r'(?=Status:).*(?=)', str(x)).group(0)
         statuses.append(clean)
 
-    return str(cleaned_address)
+    for (a, b, c, d, e) in itertools.izip_longest(cleaned_address, refernce_numbers, received_dates, validated_dates, statuses):
+        print(a, b, c, d, e)
+
+    return str(statuses)
