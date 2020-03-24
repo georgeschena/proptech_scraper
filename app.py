@@ -97,8 +97,9 @@ def hello():
         strip_spaces = remove_status_string.strip()
         statuses.append(strip_spaces)
 
-    for a in statuses:
-        prop = Properties(address=a)
+    for (address, refernce_number, received_date, validated_date, status) in itertools.izip_longest(cleaned_address, refernce_numbers, received_dates, validated_dates, statuses):
+        prop = Properties(address=address, refernce_number=refernce_number,
+                          received_date=received_date, validated_date=validated_dates, status=status)
         db.session.add(prop)
         db.session.commit()
 
