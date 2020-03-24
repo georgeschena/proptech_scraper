@@ -51,6 +51,8 @@ def hello():
     metainfo = page_of_results.find('ul', id='searchresults').find_all(
         'p', attrs={'class': 'metaInfo'})
 
+    description = page_of_results.find('ul', id='searchresults').find_all('a')
+
     cleaned_metainfo = []
     for x in metainfo:
         clean = re.sub(r'\>(.*?)\<', ' ', str(x))
@@ -99,8 +101,8 @@ def hello():
 
     for (address, refernce_number, received_date, validated_date, status) in itertools.izip_longest(cleaned_address, refernce_numbers, received_dates, validated_dates, statuses):
         prop = Properties(address=address, refernce_number=refernce_number,
-                          received_date=received_date, validated_date=validated_dates, status=status)
+                          received_date=received_date, validated_date=validated_date, status=status)
         db.session.add(prop)
         db.session.commit()
 
-    return str(statuses)
+    return str(description)
