@@ -18,18 +18,24 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://georgeschena:password@loca
 
 class Properties(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    address = db.Column(db.String(255), nullable=True)
-    refernce_number = db.Column(db.String(60),  nullable=True)
-    received_date = db.Column(db.String(60),  nullable=True)
-    validated_date = db.Column(db.String(60),  nullable=True)
-    status = db.Column(db.String(60),  nullable=True)
+    url = db.Column(db.Text, nullable=True)
+    council_name = db.Column(db.String(255), nullable=True)
+    address = db.Column(db.Text, nullable=True)
+    description = db.Column(db.Text, nullable=True)
+    refernce_number = db.Column(db.String(255),  nullable=True)
+    received_date = db.Column(db.String(255),  nullable=True)
+    validated_date = db.Column(db.String(255),  nullable=True)
+    status = db.Column(db.String(255),  nullable=True)
 
 
 @app.route('/')
 def hello():
+
+    council_name = "https://planning.thanet.gov.uk"
+
     driver = webdriver.Firefox()
     driver.get(
-        "https://planning.thanet.gov.uk/online-applications/search.do?action=advanced")
+        council_name + "/online-applications/search.do?action=advanced")
 
     applicationReceivedStart = driver.find_element_by_id(
         "applicationReceivedStart")
@@ -51,7 +57,8 @@ def hello():
     metainfo = page_of_results.find('ul', id='searchresults').find_all(
         'p', attrs={'class': 'metaInfo'})
 
-    description = page_of_results.find('ul', id='searchresults').find_all('a')
+    description_and_link = page_of_results.find(
+        'ul', id='searchresults').find_all('a')
 
     cleaned_metainfo = []
     for x in metainfo:
@@ -66,6 +73,21 @@ def hello():
         remove_tags = remove_class.replace(r'</p>', "")
         strip_spaces = remove_tags.strip()
         cleaned_address.append(strip_spaces)
+
+    descriptions = []
+    for x in description_and_link:
+        clean = re.sub(r'<a href=(.*)">', ' ', str(x))
+        remove_link = clean.replace(r'</a>', "")
+        strip_spaces = remove_link.strip()
+        descriptions.append(strip_spaces)
+
+    urls = []
+    for x in description_and_link:
+        clean = re.search(r'(?=<a href=").*(?=">)', str(x)).group(0)
+        remove_class = clean.replace(r'<a href="', "")
+        remove_amp = remove_class.replace(r'amp;', "")
+        append_council_name = council_name + remove_amp
+        urls.append(append_council_name)
 
     refernce_numbers = []
     for x in cleaned_metainfo:
@@ -99,10 +121,10 @@ def hello():
         strip_spaces = remove_status_string.strip()
         statuses.append(strip_spaces)
 
-    for (address, refernce_number, received_date, validated_date, status) in itertools.izip_longest(cleaned_address, refernce_numbers, received_dates, validated_dates, statuses):
-        prop = Properties(address=address, refernce_number=refernce_number,
+    for (url, address, description, refernce_number, received_date, validated_date, status) in itertools.izip_longest(urls, cleaned_address, descriptions, refernce_numbers, received_dates, validated_dates, statuses):
+        prop = Properties(url=url, council_name=council_name, address=address, description=description, refernce_number=refernce_number,
                           received_date=received_date, validated_date=validated_date, status=status)
         db.session.add(prop)
         db.session.commit()
 
-    return str(description)
+    return str(description_and_link)
