@@ -1,4 +1,4 @@
-from flask import Flask, escape, request
+from flask import Flask, escape, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import re
 import itertools
@@ -27,9 +27,26 @@ class Properties(db.Model):
     validated_date = db.Column(db.String(255),  nullable=True)
     status = db.Column(db.String(255),  nullable=True)
 
+    def serialize(self):
+        return {"id": self.id,
+                "url": self.url,
+                "council_name": self.council_name,
+                "address": self.address,
+                "description": self.description,
+                "refernce_number": self.refernce_number,
+                "received_date": self.received_date,
+                "validated_date": self.validated_date,
+                "status": self.status
+                }
 
-@app.route('/')
-def hello():
+
+@app.route('/all_properties')
+def index():
+    return jsonify({'properties': list(map(lambda prop: prop.serialize(), Properties.query.all()))})
+
+
+@app.route('/scrapped_properties')
+def get():
 
     council_name = "https://planning.thanet.gov.uk"
 
