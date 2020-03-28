@@ -28,20 +28,21 @@ class Properties(db.Model):
     status = db.Column(db.String(255),  nullable=True)
 
     def serialize(self):
-        return {"id": self.id,
-                "url": self.url,
-                "council_name": self.council_name,
-                "address": self.address,
-                "description": self.description,
-                "refernce_number": self.refernce_number,
-                "received_date": self.received_date,
-                "validated_date": self.validated_date,
-                "status": self.status
-                }
+        return {
+            "id": self.id,
+            "url": self.url,
+            "council_name": self.council_name,
+            "address": self.address,
+            "description": self.description,
+            "refernce_number": self.refernce_number,
+            "received_date": self.received_date,
+            "validated_date": self.validated_date,
+            "status": self.status
+        }
 
 
 @app.route('/all_properties')
-def index():
+def get_all_properties():
     return jsonify(
         {
             "count": Properties.query.count(),
@@ -49,8 +50,8 @@ def index():
         })
 
 
-@app.route('/scrapper')
-def get():
+@app.route('/')
+def index():
 
     council_name = "https://planning.thanet.gov.uk"
 
@@ -148,4 +149,6 @@ def get():
         db.session.add(prop)
         db.session.commit()
 
-    return str(description_and_link)
+    driver.close()
+
+    return str('Scraping portals...')
