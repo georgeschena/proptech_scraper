@@ -42,10 +42,14 @@ class Properties(db.Model):
 
 @app.route('/all_properties')
 def index():
-    return jsonify({'properties': list(map(lambda prop: prop.serialize(), Properties.query.all()))})
+    return jsonify(
+        {
+            "count": Properties.query.count(),
+            "properties": list(map(lambda prop: prop.serialize(), Properties.query.all()))
+        })
 
 
-@app.route('/scrapped_properties')
+@app.route('/scrapper')
 def get():
 
     council_name = "https://planning.thanet.gov.uk"
