@@ -5,7 +5,7 @@ app = Flask(__name__)
 db = SQLAlchemy(app)
 
 
-class Properties(db.Model):
+class Property(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.Text, nullable=True)
     council_name = db.Column(db.String(255), nullable=True)

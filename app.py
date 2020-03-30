@@ -1,6 +1,6 @@
 from flask import Flask, escape, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from models.property_model import Properties
+from models.property_model import Property
 import os
 
 app = Flask(__name__)
@@ -14,6 +14,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
 def get_all_properties():
     return jsonify(
         {
-            "count": Properties.query.count(),
-            "properties": list(map(lambda prop: prop.serialize(), Properties.query.all()))
+            "count": Property.query.count(),
+            "properties": list(map(lambda prop: prop.serialize(), Property.query.all()))
         })

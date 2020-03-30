@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 import re
 import os
 import itertools
-from models.property_model import Properties
+from models.property_model import Property
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -109,8 +109,8 @@ for x in cleaned_metainfo:
     statuses.append(strip_spaces)
 
 for (url, address, description, refernce_number, received_date, validated_date, status) in itertools.izip_longest(urls, cleaned_address, descriptions, refernce_numbers, received_dates, validated_dates, statuses):
-    prop = Properties(url=url, council_name=council_name, address=address, description=description, refernce_number=refernce_number,
-                      received_date=received_date, validated_date=validated_date, status=status)
+    prop = Property(url=url, council_name=council_name, address=address, description=description, refernce_number=refernce_number,
+                    received_date=received_date, validated_date=validated_date, status=status)
     db.session.add(prop)
     db.session.commit()
 
