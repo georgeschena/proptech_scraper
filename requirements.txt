@@ -4,5 +4,3 @@ flask
 flask_sqlalchemy
 selenium
 bs4
-re
-itertools
