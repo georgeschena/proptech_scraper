@@ -1,6 +1,7 @@
 from flask import Flask, escape, request
 from flask_sqlalchemy import SQLAlchemy
 import re
+import os
 import itertools
 from models.property_model import Properties
 
@@ -13,7 +14,8 @@ from bs4 import BeautifulSoup
 app = Flask(__name__)
 db = SQLAlchemy(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://georgeschena:password@localhost/property_scraper'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
+    'SQLALCHEMY_DATABASE_URI')
 
 council_name = "https://planning.thanet.gov.uk"
 
