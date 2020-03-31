@@ -5,9 +5,9 @@ import os
 
 app = Flask(__name__)
 db = SQLAlchemy(app)
-app.config.from_object('config')
 
-app.config['SQLALCHEMY_DATABASE_URI'] = app.config["SQLALCHEMY_DATABASE_URI"]
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
+    'SQLALCHEMY_DATABASE_URI')
 
 
 @app.route('/all_properties')
