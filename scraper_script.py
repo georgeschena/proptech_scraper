@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 import re
 import os
 import itertools
-from models.property_model import Property
+from property_model import Property
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -13,9 +13,9 @@ from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 db = SQLAlchemy(app)
+app.config.from_object('config')
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-    'SQLALCHEMY_DATABASE_URI')
+app.config['SQLALCHEMY_DATABASE_URI'] = app.config["SQLALCHEMY_DATABASE_URI"]
 
 council_name = "https://planning.thanet.gov.uk"
 
