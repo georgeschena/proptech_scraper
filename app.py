@@ -11,7 +11,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
     'SQLALCHEMY_DATABASE_URI')
 
 
-@app.route('/all_properties')
+@app.route('/all_properties', methods=['GET'])
 def get_all_properties():
     return jsonify(
         {
@@ -20,7 +20,7 @@ def get_all_properties():
         })
 
 
-@app.route('/todays_properties')
+@app.route('/todays_properties', methods=['GET'])
 def get_todays_properties():
     today = date.today()
     formatted_todays_date = today.strftime("%a %d %b %Y")
@@ -36,3 +36,8 @@ def get_todays_properties():
             "count": properties_today_count,
             "properties": list(map(lambda prop: prop.serialize(), properties_today))
         })
+
+
+@app.route('/search_properties/<string:council_name>', methods=['POST'])
+def search_properties(council_name):
+    return 'this is my name ' + council_name
