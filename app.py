@@ -38,6 +38,8 @@ def get_todays_properties():
         })
 
 
-@app.route('/search_properties/<string:council_name>', methods=['POST'])
-def search_properties(council_name):
-    return 'this is my name ' + council_name
+@app.route('/search_properties', methods=['POST'])
+def search_properties():
+    data = request.data
+
+    return str(data)
