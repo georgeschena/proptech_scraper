@@ -41,5 +41,10 @@ def get_todays_properties():
 @app.route('/search_properties', methods=['POST'])
 def search_properties():
     data = request.data
+    print(data)
 
-    return str(data)
+    return jsonify(
+        {
+            "count": Property.query.count(),
+            "properties": list(map(lambda prop: prop.serialize(), Property.query.all()))
+        })
