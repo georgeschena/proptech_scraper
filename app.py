@@ -40,11 +40,21 @@ def get_todays_properties():
 
 @app.route('/search_properties', methods=['POST'])
 def search_properties():
-    data = request.data
-    print(data)
+    data = request.get_json()
+
+    council_name = data['council_name']
+    description = data['description']
+
+    search_query = Property.query.filter(
+        Property.council_name == council_name,
+        Property.description.contains(description)).all()
+
+    search_query_count = Property.query.filter(
+        Property.council_name == council_name,
+        Property.description.contains(description)).count()
 
     return jsonify(
         {
-            "count": Property.query.count(),
-            "properties": list(map(lambda prop: prop.serialize(), Property.query.all()))
+            "count": search_query_count,
+            "properties": list(map(lambda prop: prop.serialize(), search_query))
         })
