@@ -57,14 +57,19 @@ for council_name in council_names:
 
         page_of_results = BeautifulSoup(driver.page_source, "html.parser")
 
-        address = page_of_results.find('ul', id='searchresults').find_all(
-            'p', attrs={'class': 'address'})
+        try:
+            address = page_of_results.find('ul', id='searchresults').find_all(
+                'p', attrs={'class': 'address'})
 
-        metainfo = page_of_results.find('ul', id='searchresults').find_all(
-            'p', attrs={'class': 'metaInfo'})
+            metainfo = page_of_results.find('ul', id='searchresults').find_all(
+                'p', attrs={'class': 'metaInfo'})
 
-        description_and_link = page_of_results.find(
-            'ul', id='searchresults').find_all('a')
+            description_and_link = page_of_results.find(
+                'ul', id='searchresults').find_all('a')
+        except:
+            print(starting_date, 'No results found for this date')
+            starting_date = starting_date + datetime.timedelta(+1)
+            continue
 
         cleaned_metainfo = []
         for x in metainfo:
@@ -136,5 +141,3 @@ for council_name in council_names:
 
         print(starting_date, 'COMPLETED!')
         starting_date = starting_date + datetime.timedelta(+1)
-
-        driver.close()
